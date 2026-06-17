@@ -1,0 +1,20 @@
+[
+        {
+            "id": 423,
+            "name": "Energy Plus Biscuit",
+            "price": 55,
+            "size": "medium"
+        },
+        {
+            "id": 234,
+            "name": "Gold meri Biscuit",
+            "price": 70,
+            "size": "medium"
+        },
+        {
+            "id": 709,
+            "name": "Nutty Biscuit",
+            "price": 15,
+            "size": "small"
+        }
+    ]
