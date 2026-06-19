@@ -1,34 +1,34 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readProduct } from "../service/product.service";
+import type { IProduct } from "../types/product.interface";
 
 export const productController = (req: IncomingMessage, res: ServerResponse) => {
 
-    // const productsItemList = [
-    //     {
-    //         id: 423,
-    //         name: "Energy Plus Biscuit",
-    //         price: 55,
-    //         size: "medium"
-    //     },
-    //     {
-    //         id: 234,
-    //         name: "Gold meri Biscuit",
-    //         price: 70,
-    //         size: "medium"
-    //     },
-    //     {
-    //         id: 709,
-    //         name: "Nutty Biscuit",
-    //         price: 15,
-    //         size: "small"
-    //     }
-    // ]
+    const url = req.url;
+    const method = req.method;
 
-    const productsItemList = readProduct();
+    const urlParts = url?.split("/");
+    const id = urlParts && urlParts[2] !== null ? Number(urlParts[2]) : null;
 
-    res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({
-        message: "This is product route!... it's a wonderfull journey!",
-        data: productsItemList
-    }))
+
+    if (url === "/products" && method === "GET") {
+        const productsItemList = readProduct();
+
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({
+            message: "This is product route!... it's a wonderfull journey!",
+            data: productsItemList
+        }))
+    } else if (method === "GET" && id !== null) {
+        const productsItemList = readProduct();
+
+        const product = productsItemList.find((p: IProduct) => p.id === id)
+
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({
+            message: "the product is founded!",
+            data: product
+        }))
+    }
+
 }
