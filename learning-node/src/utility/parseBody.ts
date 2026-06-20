@@ -12,6 +12,7 @@ export const parseBody = (req: IncomingMessage): Promise<any> => {
                 resolve(JSON.parse(body));
             } catch (error) {
                 reject(error)
+                // console.log("product operation failed!")
             }
         })
     })

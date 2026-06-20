@@ -3,9 +3,7 @@ import { insertProduct, readProduct } from "../service/product.service";
 import type { IProduct } from "../types/product.interface";
 import { parseBody } from "../utility/parseBody";
 
-export const productController = async(req: IncomingMessage, res: ServerResponse) => {
-
-    console.log(parseBody(req))
+export const productController = async (req: IncomingMessage, res: ServerResponse) => {
 
     const url = req.url;
     const method = req.method;
@@ -36,25 +34,48 @@ export const productController = async(req: IncomingMessage, res: ServerResponse
 
         const productsItemList = readProduct();
         const body = await parseBody(req);
-        
+
         const newProduct = {
             id: Date.now(),
             ...body
         }
 
-        
         productsItemList.push(newProduct);
-
         insertProduct(productsItemList);
-        
-        console.log(productsItemList)
-
 
         res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify({
             message: "The product is created!",
             data: newProduct
         }))
+    } else if (method === "PUT" && id !== null) {
+        const body = await parseBody(req);
+
+        const productsItemList = readProduct();
+        const index = productsItemList.findIndex((p: IProduct) => p.id === id);
+        // console.log(index);
+        if (index < 0) {
+            res.writeHead(404, { "content-type": "application/json" });
+            res.end(JSON.stringify({
+                message: "This product not found...",
+                data: null
+            }))
+        }
+
+        console.log(productsItemList[index].id)
+                
+        productsItemList[index] = { id: productsItemList[index].id, ...body }
+
+        insertProduct(productsItemList);
+
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({
+            message: "The product is update succefull...",
+            data: productsItemList[index]
+        }))
+
+
+
     }
 
 }
