@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { insertProduct, readProduct } from "../service/product.service";
 import type { IProduct } from "../types/product.interface";
 import { parseBody } from "../utility/parseBody";
+import { sendResponse } from "../utility/sendResponse";
 
 export const productController = async (req: IncomingMessage, res: ServerResponse) => {
 
@@ -15,11 +16,16 @@ export const productController = async (req: IncomingMessage, res: ServerRespons
     if (url === "/products" && method === "GET") {
         const productsItemList = readProduct();
 
-        res.writeHead(200, { "content-type": "application/json" });
-        res.end(JSON.stringify({
-            message: "This is product route!... it's a wonderfull journey!",
-            data: productsItemList
-        }))
+        // res.writeHead(200, { "content-type": "application/json" });
+        // res.end(JSON.stringify({
+        //     message: "This is product route!... it's a wonderfull journey!",
+        //     data: productsItemList
+        // }))
+        try {
+            sendResponse(res, 200, true, "Products all succesfully get", productsItemList)            
+        } catch (error) {
+            sendResponse(res, 500, false, "Something went wrong", error)
+        }
     } else if (method === "GET" && id !== null) {
         const productsItemList = readProduct();
 
